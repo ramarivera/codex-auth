@@ -1,6 +1,6 @@
 {
   "name": "@ramarivera/codex-auth",
-  "version": "0.2.10-silent.0",
+  "version": "0.2.10-silent.1",
   "type": "module",
   "description": "CLI for switching Codex accounts (forked to restore background auto-switch with silent Windows behavior)",
   "license": "MIT",
