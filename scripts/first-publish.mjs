@@ -39,7 +39,7 @@ console.log("=== Building binaries ===");
 run("mise exec zig -- zig build -Doptimize=ReleaseSafe");
 
 console.log("\n=== Staging npm packages ===");
-run("node scripts/npm/stage-packages.mjs --artifacts-dir zig-out --output-dir dist/npm");
+run("node scripts/npm/stage-packages.mjs --artifacts-dir artifacts --output-dir dist/npm");
 
 console.log("\n=== Publishing packages ===");
 
