@@ -18,6 +18,14 @@ const win = if (builtin.os.tag == .windows) struct {
     ) callconv(.winapi) windows.BOOL;
 } else struct {};
 
+pub fn stdoutColorEnabled() bool {
+    return fileColorEnabled(std.Io.File.stdout());
+}
+
+pub fn stderrColorEnabled() bool {
+    return fileColorEnabled(std.Io.File.stderr());
+}
+
 pub fn fileColorEnabled(file: std.Io.File) bool {
     if (envExists("NO_COLOR")) return false;
     if (!(file.isTty(app_runtime.io()) catch false)) return false;

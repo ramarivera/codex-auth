@@ -12,12 +12,12 @@ const require = createRequire(import.meta.url);
 const rootPackageJsonPath = path.join(__dirname, "..", "package.json");
 
 const packageMap = {
-  "linux:x64": "@loongphy/codex-auth-linux-x64",
-  "linux:arm64": "@loongphy/codex-auth-linux-arm64",
-  "darwin:x64": "@loongphy/codex-auth-darwin-x64",
-  "darwin:arm64": "@loongphy/codex-auth-darwin-arm64",
-  "win32:x64": "@loongphy/codex-auth-win32-x64",
-  "win32:arm64": "@loongphy/codex-auth-win32-arm64"
+  "linux:x64": "@ramarivera/codex-auth-linux-x64",
+  "linux:arm64": "@ramarivera/codex-auth-linux-arm64",
+  "darwin:x64": "@ramarivera/codex-auth-darwin-x64",
+  "darwin:arm64": "@ramarivera/codex-auth-darwin-arm64",
+  "win32:x64": "@ramarivera/codex-auth-win32-x64",
+  "win32:arm64": "@ramarivera/codex-auth-win32-arm64"
 };
 
 function readRootPackage() {
@@ -66,7 +66,7 @@ function resolveBinary() {
     return binaryPath;
   } catch (error) {
     console.error(
-      `Missing platform package ${packageName}. Reinstall @loongphy/codex-auth on ${process.platform}/${process.arch}.`
+      `Missing platform package ${packageName}. Reinstall @ramarivera/codex-auth on ${process.platform}/${process.arch}.`
     );
     if (error && error.message) {
       console.error(error.message);
@@ -77,7 +77,8 @@ function resolveBinary() {
 
 const binaryPath = resolveBinary();
 const child = spawnSync(binaryPath, process.argv.slice(2), {
-  stdio: "inherit"
+  stdio: "inherit",
+  windowsHide: true
 });
 
 if (child.error) {

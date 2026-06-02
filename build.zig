@@ -1,14 +1,23 @@
 const std = @import("std");
 
+fn linkWindowsTaskSchedulerLibraries(module: *std.Build.Module) void {
+    module.linkSystemLibrary("ole32", .{});
+    module.linkSystemLibrary("oleaut32", .{});
+}
+
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
+    const is_windows = target.result.os.tag == .windows;
     const package_module = b.createModule(.{
         .root_source_file = b.path("src/root.zig"),
         .target = target,
         .optimize = optimize,
         .link_libc = true,
     });
+    if (is_windows) {
+        linkWindowsTaskSchedulerLibraries(package_module);
+    }
 
     const main_module = b.createModule(.{
         .root_source_file = b.path("src/main.zig"),
@@ -16,11 +25,30 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
         .link_libc = true,
     });
+    if (is_windows) {
+        linkWindowsTaskSchedulerLibraries(main_module);
+    }
     const exe = b.addExecutable(.{
         .name = "codex-auth",
         .root_module = main_module,
     });
     b.installArtifact(exe);
+
+    if (is_windows) {
+        const auto_module = b.createModule(.{
+            .root_source_file = b.path("src/auto_main.zig"),
+            .target = target,
+            .optimize = optimize,
+            .link_libc = true,
+        });
+        linkWindowsTaskSchedulerLibraries(auto_module);
+        const auto_exe = b.addExecutable(.{
+            .name = "codex-auth-auto",
+            .root_module = auto_module,
+        });
+        auto_exe.subsystem = .Windows;
+        b.installArtifact(auto_exe);
+    }
 
     const fake_curl_module = b.createModule(.{
         .root_source_file = b.path("tests/fake_curl.zig"),

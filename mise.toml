@@ -1,0 +1,12 @@
+[tools]
+zig = "0.16.0"
+
+[tasks.build]
+description = "Build codex-auth and codex-auth-auto (Windows)"
+run = "zig build"
+
+[tasks.install]
+description = "Install locally via npm link"
+run = "npm link"
+
+depends = ["build"]

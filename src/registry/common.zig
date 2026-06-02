@@ -76,6 +76,15 @@ pub const RolloutSignature = struct {
     event_timestamp_ms: i64,
 };
 
+pub const default_auto_switch_threshold_5h_percent: u8 = 1;
+pub const default_auto_switch_threshold_weekly_percent: u8 = 1;
+
+pub const AutoSwitchConfig = struct {
+    enabled: bool = false,
+    threshold_5h_percent: u8 = default_auto_switch_threshold_5h_percent,
+    threshold_weekly_percent: u8 = default_auto_switch_threshold_weekly_percent,
+};
+
 pub const ApiConfig = struct {
     usage: bool = true,
     account: bool = true,
@@ -138,6 +147,7 @@ pub const Registry = struct {
     previous_active_account_key: ?[]u8 = null,
     active_account_activated_at_ms: ?i64,
     api: ApiConfig,
+    auto_switch: AutoSwitchConfig = defaultAutoSwitchConfig(),
     live: LiveConfig = defaultLiveConfig(),
     accounts: std.ArrayList(AccountRecord),
 
@@ -152,6 +162,10 @@ pub const Registry = struct {
 };
 
 pub fn defaultApiConfig() ApiConfig {
+    return .{};
+}
+
+pub fn defaultAutoSwitchConfig() AutoSwitchConfig {
     return .{};
 }
 

@@ -76,11 +76,13 @@ fn deleteAbsoluteFileIfExists(path: []const u8) bool {
 }
 
 fn runIgnoringFailure(allocator: std.mem.Allocator, argv: []const []const u8) void {
-    const result = std.process.run(allocator, app_runtime.io(), .{
+    _ = allocator;
+    var child = std.process.spawn(app_runtime.io(), .{
         .argv = argv,
-        .stdout_limit = .limited(1024 * 1024),
-        .stderr_limit = .limited(1024 * 1024),
+        .stdin = .ignore,
+        .stdout = .ignore,
+        .stderr = .ignore,
+        .create_no_window = true,
     }) catch return;
-    allocator.free(result.stdout);
-    allocator.free(result.stderr);
+    _ = child.wait(app_runtime.io()) catch {};
 }

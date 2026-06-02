@@ -59,6 +59,8 @@ pub fn writeHelp(
     try writeCommandDetail(out, use_color, "clean background");
     try writeCommandSummary(out, use_color, "config", "Manage configuration");
     try writeCommandDetail(out, use_color, "config live --interval <seconds>");
+    try writeCommandSummary(out, use_color, "status", "Show auto-switch and service status");
+    try writeCommandSummary(out, use_color, "daemon --watch|--once", "Run the background auto-switch daemon");
     try writeCommandSummary(out, use_color, "app", "Launch Codex App with CLI overrides");
 
     try out.writeAll("\n");
@@ -134,6 +136,8 @@ fn commandNameForTopic(topic: HelpTopic) []const u8 {
         .alias => "alias",
         .clean => "clean",
         .config => "config",
+        .status => "status",
+        .daemon => "daemon",
         .app => "app",
     };
 }
@@ -150,20 +154,22 @@ fn commandDescriptionForTopic(topic: HelpTopic) []const u8 {
         .alias => "Set or clear an account alias by alias, email, display number, or partial query.",
         .clean => "Delete backup and stale files under accounts/.",
         .config => "Manage live refresh configuration.",
+        .status => "Show auto-switch and service status.",
+        .daemon => "Run the background auto-switch daemon.",
         .app => "Launch Codex App with CLI overrides.",
     };
 }
 
 fn commandHelpHasExamples(topic: HelpTopic) bool {
     return switch (topic) {
-        .import_auth, .export_auth, .switch_account, .remove_account, .alias, .config, .app => true,
+        .import_auth, .export_auth, .switch_account, .remove_account, .alias, .config, .daemon, .app => true,
         else => false,
     };
 }
 
 fn commandHelpHasOptions(topic: HelpTopic) bool {
     return switch (topic) {
-        .list, .login, .import_auth, .export_auth, .switch_account, .remove_account, .alias, .config, .app => true,
+        .list, .login, .import_auth, .export_auth, .switch_account, .remove_account, .alias, .config, .daemon, .app => true,
         else => false,
     };
 }
@@ -228,6 +234,13 @@ fn writeUsageLines(out: *std.Io.Writer, topic: HelpTopic) !void {
         .config => {
             try out.writeAll("  codex-auth config live --interval <seconds>\n");
         },
+        .status => {
+            try out.writeAll("  codex-auth status\n");
+        },
+        .daemon => {
+            try out.writeAll("  codex-auth daemon --watch\n");
+            try out.writeAll("  codex-auth daemon --once\n");
+        },
         .app => {
             try out.writeAll("  codex-auth app [--id <id>] [--codex-cli-path <path>] [--codex-home <path>] [--platform win|wsl|mac]\n");
         },
@@ -246,6 +259,8 @@ pub fn helpCommandForTopic(topic: HelpTopic) []const u8 {
         .alias => "codex-auth alias --help",
         .clean => "codex-auth clean --help",
         .config => "codex-auth config --help",
+        .status => "codex-auth status --help",
+        .daemon => "codex-auth daemon --help",
         .app => "codex-auth app --help",
     };
 }
@@ -302,6 +317,10 @@ fn writeOptionLines(out: *std.Io.Writer, topic: HelpTopic) !void {
         .config => {
             try out.writeAll("  live --interval <seconds>\n");
             try out.writeAll("                    Set the live TUI refresh interval from 5 to 3600 seconds.\n");
+        },
+        .daemon => {
+            try out.writeAll("  --watch    Run the auto-switch daemon as a long-lived watcher.\n");
+            try out.writeAll("  --once     Run one auto-switch cycle and exit.\n");
         },
         .app => {
             try out.writeAll("  --id <id>          Windows package/AUMID or macOS bundle identifier.\n");
@@ -384,6 +403,13 @@ fn writeExampleLines(out: *std.Io.Writer, topic: HelpTopic) !void {
         },
         .config => {
             try out.writeAll("  codex-auth config live --interval 60\n");
+        },
+        .status => {
+            try out.writeAll("  codex-auth status\n");
+        },
+        .daemon => {
+            try out.writeAll("  codex-auth daemon --watch\n");
+            try out.writeAll("  codex-auth daemon --once\n");
         },
         .app => {
             try out.writeAll("  codex-auth app\n");
