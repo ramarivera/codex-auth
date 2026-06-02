@@ -661,6 +661,7 @@ test "Scenario: Given config live interval when parsing then interval is preserv
         .command => |cmd| switch (cmd) {
             .config => |opts| switch (opts) {
                 .live => |live_opts| try std.testing.expectEqual(@as(u16, 30), live_opts.interval_seconds),
+                .auto_switch => return error.TestExpectedEqual,
             },
             else => return error.TestExpectedEqual,
         },

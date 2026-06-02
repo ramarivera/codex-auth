@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ramarivera/codex-auth"
+    "url": "git+https://github.com/ramarivera/codex-auth.git"
   },
   "homepage": "https://github.com/ramarivera/codex-auth",
   "bugs": {
