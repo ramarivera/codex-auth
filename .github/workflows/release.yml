@@ -364,7 +364,6 @@ jobs:
     needs: [build-test, release-assets]
     permissions:
       contents: read
-      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -375,6 +374,9 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
+          always-auth: true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Download build artifacts
         uses: actions/download-artifact@v8
@@ -425,6 +427,8 @@ jobs:
 
       - name: Publish platform packages
         shell: bash
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           for dir in \
             codex-auth-linux-x64 \
@@ -438,4 +442,6 @@ jobs:
           done
 
       - name: Publish root package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish ./dist/npm/root --access public --tag ${{ env.NPM_DIST_TAG }}
