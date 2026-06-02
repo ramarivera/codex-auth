@@ -411,7 +411,7 @@ jobs:
           mkdir -p smoke
           cd smoke
           npm init -y
-          npm install "../dist/packed/loongphy-codex-auth-linux-x64-${PACKAGE_VERSION}.tgz" "../dist/packed/loongphy-codex-auth-${PACKAGE_VERSION}.tgz"
+          npm install "../dist/packed/ramarivera-codex-auth-linux-x64-${PACKAGE_VERSION}.tgz" "../dist/packed/ramarivera-codex-auth-${PACKAGE_VERSION}.tgz"
           ./node_modules/.bin/codex-auth --version
 
       - name: Set npm dist-tag
