@@ -75,7 +75,24 @@ function resolveBinary() {
   }
 }
 
+function ensureExecutable(binaryPath) {
+  if (process.platform === "win32") return;
+  try {
+    fs.accessSync(binaryPath, fs.constants.X_OK);
+  } catch {
+    // Some npm publish/install paths drop the executable bit on the platform
+    // binary, which makes spawnSync fail with EACCES. Self-heal when we can;
+    // if the filesystem is read-only the spawn below will surface the error.
+    try {
+      fs.chmodSync(binaryPath, 0o755);
+    } catch {
+      /* best effort */
+    }
+  }
+}
+
 const binaryPath = resolveBinary();
+ensureExecutable(binaryPath);
 const child = spawnSync(binaryPath, process.argv.slice(2), {
   stdio: "inherit",
   windowsHide: true
